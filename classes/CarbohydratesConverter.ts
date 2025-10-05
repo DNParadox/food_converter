@@ -122,6 +122,10 @@ export class CarbohydratesConverter {
         return this.conversionRates;
     }
 
+    public static getCarbohydrateTypes(): carbohydrateType[] {
+        return Object.keys(this.conversionRates) as carbohydrateType[];
+    }
+
     public static convert(amount: number, from: carbohydrateType, to: carbohydrateType): number {
         if (from === to) return amount;
         const rate = this.conversionRates[from]?.[to];

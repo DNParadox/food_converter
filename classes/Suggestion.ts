@@ -1,27 +1,80 @@
-import { CarbohydratesConverter } from "./CarbohydratesConverter";
-import { carbohydrateType } from '../types/FoodType';
-
+export interface SuggestionConfig {
+    originalAmount: number;
+    from: string;
+    to: string;
+    convertedAmount: number;
+    keepPercentage?: number;
+    convertPercentage?: number;
+    template?: string;
+}
 
 export class Suggestion {
-    private amount: number;
-    private from: carbohydrateType;
-    private to: carbohydrateType;
-    private amountToConvert: number;
+    
+    private static readonly DEFAULT_KEEP_PERCENTAGE = 0.7;
+    private static readonly DEFAULT_CONVERT_PERCENTAGE = 0.3;
+    private static readonly DEFAULT_TEMPLATE = 
+        'Hai {originalAmount}g di {from}? Potresti fare {remainingAmount}g di {from} e {suggestedAmount}g di {to}.';
 
-    constructor(from: carbohydrateType, to: carbohydrateType, amount: number) {
-        this.from = from;
-        this.to = to;
-        this.amount = amount;
-        this.amountToConvert = amount * 0.3;
+    public static generate(config: SuggestionConfig): string {
+        // Validazione base
+        this.validateConfig(config);
+
+        // Percentuali con valori default
+        const keepPercentage = config.keepPercentage ?? this.DEFAULT_KEEP_PERCENTAGE;
+        const convertPercentage = config.convertPercentage ?? this.DEFAULT_CONVERT_PERCENTAGE;
+        const template = config.template ?? this.DEFAULT_TEMPLATE;
+
+        // Calcoli
+        const remainingAmount = Math.round(config.originalAmount * keepPercentage);
+        const suggestedAmount = Math.round(config.convertedAmount * convertPercentage);
+
+        // Genera messaggio sostituendo i placeholder
+        return template
+            .replace(/{originalAmount}/g, config.originalAmount.toString())
+            .replace(/{from}/g, config.from)
+            .replace(/{to}/g, config.to)
+            .replace(/{remainingAmount}/g, remainingAmount.toString())
+            .replace(/{suggestedAmount}/g, suggestedAmount.toString());
     }
 
- 
-    public getMessage(): string {
-        const remainingFromAmount = this.amount * 0.7; // 70% resta in "from"
-        const suggestedAmount = CarbohydratesConverter.convert(this.amountToConvert, this.from, this.to);
-
-        return `Hai ${this.amount}g di ${this.from}? 
-                Potresti fare ${remainingFromAmount.toFixed(0)}g di ${this.from} e ${suggestedAmount.toFixed(0)}g di ${this.to}.`;
+    private static validateConfig(config: SuggestionConfig): void {
+        if (!config.originalAmount || config.originalAmount <= 0) {
+            throw new Error('originalAmount deve essere maggiore di 0');
+        }
+        if (!config.convertedAmount || config.convertedAmount <= 0) {
+            throw new Error('convertedAmount deve essere maggiore di 0');
+        }
+        if (!config.from || !config.to) {
+            throw new Error('from e to sono obbligatori');
+        }
+        
+        const keepPercentage = config.keepPercentage ?? this.DEFAULT_KEEP_PERCENTAGE;
+        const convertPercentage = config.convertPercentage ?? this.DEFAULT_CONVERT_PERCENTAGE;
+        
+        if (Math.abs(keepPercentage + convertPercentage - 1) > 0.001) {
+            throw new Error('keepPercentage + convertPercentage deve essere uguale a 1');
+        }
     }
 
+    // Metodi di utilità per configurazioni predefinite
+    public static generateDefault(originalAmount: number, from: string, to: string, convertedAmount: number): string {
+        return this.generate({
+            originalAmount,
+            from,
+            to,
+            convertedAmount
+        });
+    }
+
+    public static generateWithCustomSplit(originalAmount: number, from: string, to: string, 
+                                        convertedAmount: number, keepPercentage: number): string {
+        return this.generate({
+            originalAmount,
+            from,
+            to,
+            convertedAmount,
+            keepPercentage,
+            convertPercentage: 1 - keepPercentage
+        });
+    }
 }
