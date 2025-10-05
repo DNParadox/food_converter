@@ -178,11 +178,7 @@ npm run lint
 
 ### Funzionalità pianificate
 - [ ] Conversioni per proteine e grassi
-- [ ] Import/export configurazioni personalizzate
 - [ ] Interfaccia web complementare
-- [ ] Database nutrizionale esteso
-- [ ] Supporto per allergeni e preferenze alimentari
-- [ ] Modalità "chef" con ricette integrate
 
 
 ## Autore
