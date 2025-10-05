@@ -33,22 +33,6 @@ npm start
 
 Segui le istruzioni visualizzate nella Shell per effettuare le conversioni.
 
-## Contribuire
-Contributi sono benvenuti! Segui questi passaggi per contribuire:
-1. Fai un fork del repository.
-2. Crea un branch per le tue modifiche:
-   ```bash
-   git checkout -b nome-branch
-   ```
-3. Effettua le modifiche e committale:
-   ```bash
-   git commit -m "Descrizione delle modifiche"
-   ```
-4. Fai un push delle modifiche:
-   ```bash
-   git push origin nome-branch
-   ```
-5. Apri una pull request.
 
 ## Licenza
 Questo progetto è distribuito sotto la licenza MIT. Consulta il file `LICENSE` per maggiori dettagli.
