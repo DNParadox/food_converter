@@ -1,0 +1,2 @@
+export type macroNutrient = 'carbohydrate' | 'protein' | 'fat' ;
+export type carbohydrateType = 'pasta' | 'riso' | 'farro' | 'orzo' | 'cereali' | 'pane' | 'patate' | 'friselle' | 'crostini' | 'crackers';
